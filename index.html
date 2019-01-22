@@ -1,116 +1,103 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-	<!-- Load c3.css -->
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.6.12/c3.css" rel="stylesheet">
+<title>CSS Template</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+  box-sizing: border-box;
+}
 
-	<!-- Load d3.js and c3.js -->
-	<script src="https://d3js.org/d3.v5.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.6.12/c3.min.js"></script>
-	<!-- Cool Google Handwritten font -->
-	<link href='http://fonts.googleapis.com/css?family=Just+Another+Hand' rel='stylesheet' type='text/css'>
-	<style> 
-		h2 {
-		  font: 200 100px/1.0 'Just Another Hand', Helvetica, sans-serif;
-		  color: #969595;
-		 
-	</style>
-	<style> </style>
-	<style> </style>
-	
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Style the header */
+header {
+  background-color: #e3fcfa ;
+  padding: 30px;
+  text-align: center;
+  font-size: 35px;
+  color: #428783;
+}
+
+/* Create two columns/boxes that floats next to each other */
+nav {
+  float: left;
+  width: 30%;
+  height: 300px; /* only for demonstration, should be removed */
+  background: #deebeb ;
+  padding: 20px;
+}
+
+/* Style the list inside the menu */
+nav ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+article {
+  float: left;
+  padding: 20px;
+  width: 70%;
+  background-color: #a3d2d5;
+  height: 300px; /* only for demonstration, should be removed */
+}
+
+/* Clear floats after the columns */
+section:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Style the footer */
+footer {
+  background-color: #e3fcfa;
+  padding: 10px;
+  text-align: center;
+  color: #428783;
+}
+
+/* Responsive layout - makes the two columns/boxes stack on top of each other instead of next to each other, on small screens */
+@media (max-width: 600px) {
+  nav, article {
+    width: 100%;
+    height: auto;
+  }
+}
+</style>
 </head>
 <body>
-	<br>
-	 <h2 align='center'> My Netflix History Over the Years (Watched at least 20 times in year) <h2>
-	<div id="chart2010"><p></p></div>
-	<div id="chart2011"></div>
-	<div id="chart2012"></div>
-	<div id="chart2013"></div>
-	<div id="chart2014"></div>
-	<div id="chart2015"></div>
-	<div id="chart2016"></div>
-	<div id="chart2017"></div>
-	<div id="chart2018"></div>
 
 
-	<script>
-		// read in the csv file into d3
-		format = d3.timeFormat("%Y")
-		// output var
-		var values = {};
-		d3.csv("history.csv", function(d) {
-			// console.log(d.Title.split(':')[0]);
-			return {
-				complete_title: d.Title, 
-				title: d.Title.split(':')[0],
-				date: format(new Date(d.Date)),
-				// date_year: format(new Date(d.Date)).getFullYear(),
-			};
-		}).then(function(data){
-			// console.log(data);
+<p>World Map Visualization of National Parks</p>
 
-			var episode_cnts = d3.nest()
-			.key(function(d) { return d.date; })
-			.key(function(d) { return d.title; })
-			.rollup(function(leaves) {return leaves.length; })
-			.object(data);
 
-			var sorted_episode_cnts = {};
-			// console.log(episode_cnts);
-			var data_complete=[];
-			console.log(episode_cnts);
+<header>
+  <h2>a-R0n and codebrotherone</h2>
+</header>
 
-			for (var yr in episode_cnts) {
+<section>
+  <nav>
+    <ul>
+      <li><a href="#">a-r0n C3.js/D3.js visualization</a></li>
+      <li><a href="#">codebrotherone's C3.js/D3.js visualization</a></li>
+      <li><a href="#">folium world map</a></li>
+    </ul>
+  </nav>
+  
+  <article>
+    <h1>2 day coding challenge</h1>
+    <p>This project is a joint collaboration to build a js based visualization within 2 days using github pages.</p>
+    
+  </article>
+</section>
 
-				for (var show in episode_cnts[yr]){
-					if (episode_cnts[yr][show] > 20){
-						if (!(yr in sorted_episode_cnts)){
-							sorted_episode_cnts[yr] = [[show, episode_cnts[yr][show]]];	
-						}
-						else{
-							sorted_episode_cnts[yr].push([show, episode_cnts[yr][show]]);
-						}
-	
-					}
-					
-					
-				}
-				
-			}
+<footer>
+  <p>data science visualizations</p>
+</footer>
 
-			for (var k in sorted_episode_cnts){
-					v = sorted_episode_cnts[k];
-
-					data_complete.push([k, v]);
-				};
-
-			console.log(sorted_episode_cnts);
-			for (var k in data_complete){
-				console.log(k);
-				console.log(data_complete[k][0]);
-				// console.log(JSON.stringify(sorted_episode_cnts));
-				// console.log(sorted_episode_cnts[yr]);
-				console.log(Number(data_complete[k][0]) in sorted_episode_cnts);
-				console.log(sorted_episode_cnts[Number(data_complete[k][0])]);
-				var chart = c3.generate({
-					bindto: '#chart' + data_complete[k][0],
-					title: data_complete[k][0],
-				    data: {
-				        columns: sorted_episode_cnts[Number(data_complete[k][0])],
-				        type : 'donut',
-				        onclick: function (d, i) { console.log("onclick", d, i); },
-				        onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-				        onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-				    	},
-				    donut: {
-			            title: data_complete[k][0]
-			        }
-					});		
-			}
-				
-					
-		})
-
-	</script>
 </body>
 </html>
