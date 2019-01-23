@@ -5,3 +5,5 @@
  *Create a Data Science visualization of some sort using Python, Javascript, etc... in 2 days!*
  
 ### Solution
+
+Create a cool interactive d3.js map with locations of national park services added to the map. Served via GithubPages!
