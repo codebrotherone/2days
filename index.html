@@ -1,116 +1,1501 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-	<!-- Load c3.css -->
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.6.12/c3.css" rel="stylesheet">
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://unpkg.com/topojson-client@3"></script>
+    
+    <title>Data Science Visualization</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
 
-	<!-- Load d3.js and c3.js -->
-	<script src="https://d3js.org/d3.v5.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.6.12/c3.min.js"></script>
-	<!-- Cool Google Handwritten font -->
-	<link href='http://fonts.googleapis.com/css?family=Just+Another+Hand' rel='stylesheet' type='text/css'>
-	<style> 
-		h2 {
-		  font: 200 100px/1.0 'Just Another Hand', Helvetica, sans-serif;
-		  color: #969595;
-		 
-	</style>
-	<style> </style>
-	<style> </style>
-	
+    * {
+      box-sizing: border-box;
+    }
+
+    .states :hover {
+      fill: red;
+    }
+
+    .state-borders {
+      fill: none;
+      stroke: #fff;
+      stroke-width: 0.5px;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+      pointer-events: none;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    /* Style the header */
+    header {
+      background-color: #e3fcfa ;
+      padding: 30px;
+      text-align: center;
+      font-size: 35px;
+      color: #428783;
+    }
+
+    /* Style the footer */
+    footer {
+      background-color: #e3fcfa;
+      padding: 10px;
+      text-align: center;
+      color: #428783;
+    }
+
+
+    </style>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script>L_PREFER_CANVAS=false; L_NO_TOUCH=false; L_DISABLE_3D=false;</script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.3.4/dist/leaflet.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.3.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://rawcdn.githack.com/python-visualization/folium/master/folium/templates/leaflet.awesome.rotate.css"/>
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    
+    <meta name="viewport" content="width=device-width,
+        initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <style>#map_0bc1f37d0d384a79b0c332b8871c9610 {
+        position: relative;
+        width: 100.0%;
+        height: 100.0%;
+        left: 0.0%;
+        top: 0.0%;
+        }
+    </style>
+
 </head>
 <body>
-	<br>
-	 <h2 align='center'> My Netflix History Over the Years (Watched at least 20 times in year) <h2>
-	<div id="chart2010"><p></p></div>
-	<div id="chart2011"></div>
-	<div id="chart2012"></div>
-	<div id="chart2013"></div>
-	<div id="chart2014"></div>
-	<div id="chart2015"></div>
-	<div id="chart2016"></div>
-	<div id="chart2017"></div>
-	<div id="chart2018"></div>
 
 
-	<script>
-		// read in the csv file into d3
-		format = d3.timeFormat("%Y")
-		// output var
-		var values = {};
-		d3.csv("history.csv", function(d) {
-			// console.log(d.Title.split(':')[0]);
-			return {
-				complete_title: d.Title, 
-				title: d.Title.split(':')[0],
-				date: format(new Date(d.Date)),
-				// date_year: format(new Date(d.Date)).getFullYear(),
-			};
-		}).then(function(data){
-			// console.log(data);
 
-			var episode_cnts = d3.nest()
-			.key(function(d) { return d.date; })
-			.key(function(d) { return d.title; })
-			.rollup(function(leaves) {return leaves.length; })
-			.object(data);
 
-			var sorted_episode_cnts = {};
-			// console.log(episode_cnts);
-			var data_complete=[];
-			console.log(episode_cnts);
+<header>
+	<h1>World Map Visualization of National Parks</h1>
+</header>
 
-			for (var yr in episode_cnts) {
+  
+  
+    <h2 padding='left'>
+  <br><b>This project is a joint collaboration to build a js based visualization within 2 days using github pages. We will be using d3.js/c3.js and python visualization libraries to plot different datasets on world maps.</b></h2>
+  
+    <br>
+    <h3>Here is a geojson map of the US with Icons representing National Parks</h3>
+    <br>
+  <div class='container' display= 'flex' justify-content= 'center' >
+    
+    <svg width="960" height="600" fill="none" stroke="#000" stroke-linejoin="round" stroke-linecap="round" </svg>
+   
+  </div>
+  <br>
+  <br>
+  <h2 align="center"><b>This is the same data plotted via Folium (Python Packaged using Leaflet.js)</b></h2>
 
-				for (var show in episode_cnts[yr]){
-					if (episode_cnts[yr][show] > 20){
-						if (!(yr in sorted_episode_cnts)){
-							sorted_episode_cnts[yr] = [[show, episode_cnts[yr][show]]];	
-						}
-						else{
-							sorted_episode_cnts[yr].push([show, episode_cnts[yr][show]]);
-						}
-	
-					}
-					
-					
-				}
-				
-			}
+  <div class="folium-map" id="map_0bc1f37d0d384a79b0c332b8871c9610" width="960" height="600"  display= 'flex' justify-content= 'center' ></div>  
+  
+  <script>
 
-			for (var k in sorted_episode_cnts){
-					v = sorted_episode_cnts[k];
+    var svg = d3.select("svg");
+   
+    var path = d3.geoPath();    
 
-					data_complete.push([k, v]);
-				};
+    d3.json("https://unpkg.com/us-atlas@1/us/10m.json", function(error, us) {
+      if (error) throw error;
 
-			console.log(sorted_episode_cnts);
-			for (var k in data_complete){
-				console.log(k);
-				console.log(data_complete[k][0]);
-				// console.log(JSON.stringify(sorted_episode_cnts));
-				// console.log(sorted_episode_cnts[yr]);
-				console.log(Number(data_complete[k][0]) in sorted_episode_cnts);
-				console.log(sorted_episode_cnts[Number(data_complete[k][0])]);
-				var chart = c3.generate({
-					bindto: '#chart' + data_complete[k][0],
-					title: data_complete[k][0],
-				    data: {
-				        columns: sorted_episode_cnts[Number(data_complete[k][0])],
-				        type : 'donut',
-				        onclick: function (d, i) { console.log("onclick", d, i); },
-				        onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-				        onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-				    	},
-				    donut: {
-			            title: data_complete[k][0]
-			        }
-					});		
-			}
-				
-					
-		})
+      svg.append("path")
+          .attr("stroke", "#aaa")
+          .attr("stroke-width", 0.5)
+          .attr("d", path(topojson.mesh(us, us.objects.counties, function(a, b) { return a !== b && (a.id / 1000 | 0) === (b.id / 1000 | 0); })));
 
-	</script>
+      svg.append("path")
+          .attr("stroke-width", 0.5)
+          .attr("d", path(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; })));
+
+      svg.append("path")
+          .attr("d", path(topojson.feature(us, us.objects.nation)));
+    });
+
+    d3.csv('https://raw.githubusercontent.com/codebrotherone/2days/master/data/locations.csv', function(d){
+        
+        var defaultScale = d3.geoAlbersUsa().scale();
+        // need to translate from 600x500 to 
+        var projection = d3.geoAlbersUsa().translate([480,300]).scale(defaultScale  * 600 / 500);
+
+        var circles = svg.selectAll("circle")
+          .data(d)
+          .enter()
+          .append("circle")
+          .attr("cx",function(d) {console.log(projection([d.latitude, d.longitude])); return parseFloat(projection([d.longitude, d.latitude]));
+           })
+          .attr("cy",function(d) { return parseFloat(projection([d.longitude, d.latitude])[1]);
+           })
+          .attr("r", 3)
+          // .attr("transform", function() {return "translate(" + projection([d.longitude, d.latitude]) + ")"; })
+          .attr("fill", 'red')
+
+      });
+  </script>
+
+<script>    
+    
+    
+        var southWest = L.latLng(-90, -180);
+        var northEast = L.latLng(90, 180);
+        var bounds = L.latLngBounds(southWest, northEast);
+    
+
+    var map_0bc1f37d0d384a79b0c332b8871c9610 = L.map(
+        'map_0bc1f37d0d384a79b0c332b8871c9610', {
+        center: [31.6, 99.9],
+        zoom: 3,
+        maxBounds: bounds,
+        layers: [],
+        worldCopyJump: false,
+        crs: L.CRS.EPSG3857,
+        zoomControl: true,
+        });
+
+    
+    
+    var tile_layer_9e06ba8c2fcf4303b4b874ef3d1af76b = L.tileLayer(
+        'https://{s}.tiles.mapbox.com/v3/mapbox.world-bright/{z}/{x}/{y}.png',
+        {
+        "attribution": null,
+        "detectRetina": false,
+        "maxNativeZoom": 10,
+        "maxZoom": 10,
+        "minZoom": 3,
+        "noWrap": false,
+        "opacity": 1,
+        "subdomains": "abc",
+        "tms": false
+}).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+    
+        var marker_c18a6f0c2b294537bee7c2f0cd1eb444 = L.marker(
+            [58.58305, -154.88689],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_2a758867bfdb447dabf5a15722f18745 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_8a10f7e68023436a95901fcc95d40df5 = $(`<div id="html_8a10f7e68023436a95901fcc95d40df5" style="width: 100.0%; height: 100.0%;"> "USA-National Park Katmai"</div>`)[0];
+                popup_2a758867bfdb447dabf5a15722f18745.setContent(html_8a10f7e68023436a95901fcc95d40df5);
+            
+
+            marker_c18a6f0c2b294537bee7c2f0cd1eb444.bindPopup(popup_2a758867bfdb447dabf5a15722f18745)
+            ;
+
+            
+        
+    
+        var marker_504ca2585b6f4049a66fc3c930875857 = L.marker(
+            [33.9529, -116.0089],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_80b386ba80c5441b88e4a13ee41a044c = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_54c0fd58e01346c9ac6e65248764c151 = $(`<div id="html_54c0fd58e01346c9ac6e65248764c151" style="width: 100.0%; height: 100.0%;"> "USA-National Park Joshua Tree"</div>`)[0];
+                popup_80b386ba80c5441b88e4a13ee41a044c.setContent(html_54c0fd58e01346c9ac6e65248764c151);
+            
+
+            marker_504ca2585b6f4049a66fc3c930875857.bindPopup(popup_80b386ba80c5441b88e4a13ee41a044c)
+            ;
+
+            
+        
+    
+        var marker_39bafef0d95d4eeeb0b8e8366114de83 = L.marker(
+            [47.9624, -88.8917],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_d49c3912cd934d62b148a9db548548d7 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_9b80372d0fe940a0ae101bcc50932a76 = $(`<div id="html_9b80372d0fe940a0ae101bcc50932a76" style="width: 100.0%; height: 100.0%;"> "USA-National Park Isle Royale"</div>`)[0];
+                popup_d49c3912cd934d62b148a9db548548d7.setContent(html_9b80372d0fe940a0ae101bcc50932a76);
+            
+
+            marker_39bafef0d95d4eeeb0b8e8366114de83.bindPopup(popup_d49c3912cd934d62b148a9db548548d7)
+            ;
+
+            
+        
+    
+        var marker_7a5a5d953b9644a59921e5db960d2e83 = L.marker(
+            [34.3796, -93.0221],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_624d9fc16c294617ae77e3feec4f063c = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_36fc15d4dc3b4f839e772f6cb2fb8996 = $(`<div id="html_36fc15d4dc3b4f839e772f6cb2fb8996" style="width: 100.0%; height: 100.0%;"> "USA-National Park Hot Springs"</div>`)[0];
+                popup_624d9fc16c294617ae77e3feec4f063c.setContent(html_36fc15d4dc3b4f839e772f6cb2fb8996);
+            
+
+            marker_7a5a5d953b9644a59921e5db960d2e83.bindPopup(popup_624d9fc16c294617ae77e3feec4f063c)
+            ;
+
+            
+        
+    
+        var marker_441535a22b284553a1fe4ece261aa30c = L.marker(
+            [19.4, -155.3],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_efeff66969aa474e84741d2f09005b59 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_3a9935fcc03d481991a85276005cc1f9 = $(`<div id="html_3a9935fcc03d481991a85276005cc1f9" style="width: 100.0%; height: 100.0%;"> "USA-National Park Hawaii Volcanoes"</div>`)[0];
+                popup_efeff66969aa474e84741d2f09005b59.setContent(html_3a9935fcc03d481991a85276005cc1f9);
+            
+
+            marker_441535a22b284553a1fe4ece261aa30c.bindPopup(popup_efeff66969aa474e84741d2f09005b59)
+            ;
+
+            
+        
+    
+        var marker_bd8a476951d5458d91f63f12771b2b58 = L.marker(
+            [20.71063, -156.21039],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_0148b0560fb3426995b1b55d5ea240f5 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_5d521ef11ccd40cb8af4386f719a2920 = $(`<div id="html_5d521ef11ccd40cb8af4386f719a2920" style="width: 100.0%; height: 100.0%;"> "USA-National Park Haleakala"</div>`)[0];
+                popup_0148b0560fb3426995b1b55d5ea240f5.setContent(html_5d521ef11ccd40cb8af4386f719a2920);
+            
+
+            marker_bd8a476951d5458d91f63f12771b2b58.bindPopup(popup_0148b0560fb3426995b1b55d5ea240f5)
+            ;
+
+            
+        
+    
+        var marker_62b77494319941a5a19a5f155bace543 = L.marker(
+            [31.812, -104.8835],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_74e232a3a06446f2ab4ce5e909bf3deb = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_3c7b253f14c74339ba11827eac922bad = $(`<div id="html_3c7b253f14c74339ba11827eac922bad" style="width: 100.0%; height: 100.0%;"> "USA-National Park Guadalupe Mountains"</div>`)[0];
+                popup_74e232a3a06446f2ab4ce5e909bf3deb.setContent(html_3c7b253f14c74339ba11827eac922bad);
+            
+
+            marker_62b77494319941a5a19a5f155bace543.bindPopup(popup_74e232a3a06446f2ab4ce5e909bf3deb)
+            ;
+
+            
+        
+    
+        var marker_10956bef217047869effd3d51a9cc0c2 = L.marker(
+            [35.6536, -83.5469],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_81f5ba8350b84fcc8eaa31b6cdd977a4 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_2b2d15dcb79147e7bb2cb0a7d5bd1d32 = $(`<div id="html_2b2d15dcb79147e7bb2cb0a7d5bd1d32" style="width: 100.0%; height: 100.0%;"> "USA-National Park Great Smoky Mountains"</div>`)[0];
+                popup_81f5ba8350b84fcc8eaa31b6cdd977a4.setContent(html_2b2d15dcb79147e7bb2cb0a7d5bd1d32);
+            
+
+            marker_10956bef217047869effd3d51a9cc0c2.bindPopup(popup_81f5ba8350b84fcc8eaa31b6cdd977a4)
+            ;
+
+            
+        
+    
+        var marker_b91ca22745934343919aec25f476a2de = L.marker(
+            [37.75444, -105.55861000000002],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_58006ff55575482592e8f35ef85beb40 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_169197109b174faa8b272acbc9637b91 = $(`<div id="html_169197109b174faa8b272acbc9637b91" style="width: 100.0%; height: 100.0%;"> "USA-National Park Great Sand Dunes"</div>`)[0];
+                popup_58006ff55575482592e8f35ef85beb40.setContent(html_169197109b174faa8b272acbc9637b91);
+            
+
+            marker_b91ca22745934343919aec25f476a2de.bindPopup(popup_58006ff55575482592e8f35ef85beb40)
+            ;
+
+            
+        
+    
+        var marker_26eacc952c3d402aab5bb3368e99761a = L.marker(
+            [38.868, -114.1513],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_5d5d7a68f70d41f99e28b71352b60bd2 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_198262fb6f92435dadbc66b8ddee37cc = $(`<div id="html_198262fb6f92435dadbc66b8ddee37cc" style="width: 100.0%; height: 100.0%;"> "USA-National Park Great Basin"</div>`)[0];
+                popup_5d5d7a68f70d41f99e28b71352b60bd2.setContent(html_198262fb6f92435dadbc66b8ddee37cc);
+            
+
+            marker_26eacc952c3d402aab5bb3368e99761a.bindPopup(popup_5d5d7a68f70d41f99e28b71352b60bd2)
+            ;
+
+            
+        
+    
+        var marker_c3ba06c0f10c46f99e47bffd02195d48 = L.marker(
+            [43.9052, -110.3824],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_7547a6b58dc9448f876af9f51fe400fb = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_84f75963b5514825a877e2e9b64a9d2f = $(`<div id="html_84f75963b5514825a877e2e9b64a9d2f" style="width: 100.0%; height: 100.0%;"> "USA-National Park Grand Teton"</div>`)[0];
+                popup_7547a6b58dc9448f876af9f51fe400fb.setContent(html_84f75963b5514825a877e2e9b64a9d2f);
+            
+
+            marker_c3ba06c0f10c46f99e47bffd02195d48.bindPopup(popup_7547a6b58dc9448f876af9f51fe400fb)
+            ;
+
+            
+        
+    
+        var marker_cc5ed182f404445ea9aa68955d6beb4f = L.marker(
+            [36.065020000000004, -112.11762],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_fcbf8c1b3ae14fff9cee66b9de9329d9 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_7a4f84bdc3744dcf976d68cd6f37be3e = $(`<div id="html_7a4f84bdc3744dcf976d68cd6f37be3e" style="width: 100.0%; height: 100.0%;"> "USA-National Park Grand Canyon - South Rim"</div>`)[0];
+                popup_fcbf8c1b3ae14fff9cee66b9de9329d9.setContent(html_7a4f84bdc3744dcf976d68cd6f37be3e);
+            
+
+            marker_cc5ed182f404445ea9aa68955d6beb4f.bindPopup(popup_fcbf8c1b3ae14fff9cee66b9de9329d9)
+            ;
+
+            
+        
+    
+        var marker_3cb50515ca914e66b86066484c241d66 = L.marker(
+            [36.1632, -113.1975],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_a21c8188624141e299339e4772c2f363 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_57d8b0a964c446228292e8130123314e = $(`<div id="html_57d8b0a964c446228292e8130123314e" style="width: 100.0%; height: 100.0%;"> "USA-National Park Grand Canyon - North Rim"</div>`)[0];
+                popup_a21c8188624141e299339e4772c2f363.setContent(html_57d8b0a964c446228292e8130123314e);
+            
+
+            marker_3cb50515ca914e66b86066484c241d66.bindPopup(popup_a21c8188624141e299339e4772c2f363)
+            ;
+
+            
+        
+    
+        var marker_d30bc9bb2e12455098a001e632b37bb0 = L.marker(
+            [58.41543000000001, -135.75583999999998],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_8a1abb3ad9934bb68c8d50b3764a8935 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_613735cfb3b641a3b8bcd89456205ace = $(`<div id="html_613735cfb3b641a3b8bcd89456205ace" style="width: 100.0%; height: 100.0%;"> "USA-National Park Glacier Bay"</div>`)[0];
+                popup_8a1abb3ad9934bb68c8d50b3764a8935.setContent(html_613735cfb3b641a3b8bcd89456205ace);
+            
+
+            marker_d30bc9bb2e12455098a001e632b37bb0.bindPopup(popup_8a1abb3ad9934bb68c8d50b3764a8935)
+            ;
+
+            
+        
+    
+        var marker_d16e3335da704d70a65a0f8564e752ff = L.marker(
+            [48.616, -113.8672],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_edbe39339c3b4273ba7de226ed3ee7ff = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_cf13818c3374476aa59eab0e71473354 = $(`<div id="html_cf13818c3374476aa59eab0e71473354" style="width: 100.0%; height: 100.0%;"> "USA-National Park Glacier"</div>`)[0];
+                popup_edbe39339c3b4273ba7de226ed3ee7ff.setContent(html_cf13818c3374476aa59eab0e71473354);
+            
+
+            marker_d16e3335da704d70a65a0f8564e752ff.bindPopup(popup_edbe39339c3b4273ba7de226ed3ee7ff)
+            ;
+
+            
+        
+    
+        var marker_ba74a6bda2ab410e99ad88ff5511e021 = L.marker(
+            [67.64657, -153.2713],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_21635cc5d4d84be3a440c765aab13459 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_0fbd227f9672470e8221e9282faa3ce8 = $(`<div id="html_0fbd227f9672470e8221e9282faa3ce8" style="width: 100.0%; height: 100.0%;"> "USA-National Park Gates of the Arctic"</div>`)[0];
+                popup_21635cc5d4d84be3a440c765aab13459.setContent(html_0fbd227f9672470e8221e9282faa3ce8);
+            
+
+            marker_ba74a6bda2ab410e99ad88ff5511e021.bindPopup(popup_21635cc5d4d84be3a440c765aab13459)
+            ;
+
+            
+        
+    
+        var marker_a2579f1f15814c1181356bea340027ea = L.marker(
+            [25.4028, -80.8934],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_447b4770a250498e98f8e889d4799994 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_d1a2701cf1424617b7aa0e20c1aa077a = $(`<div id="html_d1a2701cf1424617b7aa0e20c1aa077a" style="width: 100.0%; height: 100.0%;"> "USA-National Park Everglades"</div>`)[0];
+                popup_447b4770a250498e98f8e889d4799994.setContent(html_d1a2701cf1424617b7aa0e20c1aa077a);
+            
+
+            marker_a2579f1f15814c1181356bea340027ea.bindPopup(popup_447b4770a250498e98f8e889d4799994)
+            ;
+
+            
+        
+    
+        var marker_376619ecd8ed4c27a5719636bfa90ddf = L.marker(
+            [24.6384, -81.7862],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_66768faf0a244935a9ec7e6e729ea153 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_d0b9312651804e6aaa216f5536c74b7a = $(`<div id="html_d0b9312651804e6aaa216f5536c74b7a" style="width: 100.0%; height: 100.0%;"> "USA-National Park Dry Tortugas"</div>`)[0];
+                popup_66768faf0a244935a9ec7e6e729ea153.setContent(html_d0b9312651804e6aaa216f5536c74b7a);
+            
+
+            marker_376619ecd8ed4c27a5719636bfa90ddf.bindPopup(popup_66768faf0a244935a9ec7e6e729ea153)
+            ;
+
+            
+        
+    
+        var marker_7ab1642eb5bb41a2abb93cb7a1713b24 = L.marker(
+            [63.62165, -149.27258],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_c9824574a6a84b34a1122504f90f05d9 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_ee6886de902148baa3a87ca0edd51a87 = $(`<div id="html_ee6886de902148baa3a87ca0edd51a87" style="width: 100.0%; height: 100.0%;"> "USA-National Park Denali"</div>`)[0];
+                popup_c9824574a6a84b34a1122504f90f05d9.setContent(html_ee6886de902148baa3a87ca0edd51a87);
+            
+
+            marker_7ab1642eb5bb41a2abb93cb7a1713b24.bindPopup(popup_c9824574a6a84b34a1122504f90f05d9)
+            ;
+
+            
+        
+    
+        var marker_3534bbb727194d85894ab5e3ef965071 = L.marker(
+            [36.3027, -116.4117],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_13614ff3db694a6f82d961fb4b281e70 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_bf1430d36fef4956bdac00c94def34cb = $(`<div id="html_bf1430d36fef4956bdac00c94def34cb" style="width: 100.0%; height: 100.0%;"> "USA-National Park Death Valley"</div>`)[0];
+                popup_13614ff3db694a6f82d961fb4b281e70.setContent(html_bf1430d36fef4956bdac00c94def34cb);
+            
+
+            marker_3534bbb727194d85894ab5e3ef965071.bindPopup(popup_13614ff3db694a6f82d961fb4b281e70)
+            ;
+
+            
+        
+    
+        var marker_9b733a5f12dc46e1a919e03674e76cfe = L.marker(
+            [41.20906, -81.55700999999999],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_fa03e50067a64f86b6bcbdbc546ec6bb = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_f35847eb362345ad88c3598b1f3f0360 = $(`<div id="html_f35847eb362345ad88c3598b1f3f0360" style="width: 100.0%; height: 100.0%;"> "USA-National Park Cuyahoga Valley"</div>`)[0];
+                popup_fa03e50067a64f86b6bcbdbc546ec6bb.setContent(html_f35847eb362345ad88c3598b1f3f0360);
+            
+
+            marker_9b733a5f12dc46e1a919e03674e76cfe.bindPopup(popup_fa03e50067a64f86b6bcbdbc546ec6bb)
+            ;
+
+            
+        
+    
+        var marker_8eee6944c989437c9a70be6238118e78 = L.marker(
+            [42.9173, -122.0824],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_1df4e9170eac4743a988a09efa22ef81 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_1315e2e6b9f346a3bdac247f178e7684 = $(`<div id="html_1315e2e6b9f346a3bdac247f178e7684" style="width: 100.0%; height: 100.0%;"> "USA-National Park Crater Lake"</div>`)[0];
+                popup_1df4e9170eac4743a988a09efa22ef81.setContent(html_1315e2e6b9f346a3bdac247f178e7684);
+            
+
+            marker_8eee6944c989437c9a70be6238118e78.bindPopup(popup_1df4e9170eac4743a988a09efa22ef81)
+            ;
+
+            
+        
+    
+        var marker_9b590e49114447f2aedace5117fc4905 = L.marker(
+            [33.78333, -80.78333],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_d4aa616f4f8d40d6b7c63e1a2dffa0cd = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_897c25d55e134c9cab1f7f4da38b1759 = $(`<div id="html_897c25d55e134c9cab1f7f4da38b1759" style="width: 100.0%; height: 100.0%;"> "USA-National Park Congaree"</div>`)[0];
+                popup_d4aa616f4f8d40d6b7c63e1a2dffa0cd.setContent(html_897c25d55e134c9cab1f7f4da38b1759);
+            
+
+            marker_9b590e49114447f2aedace5117fc4905.bindPopup(popup_d4aa616f4f8d40d6b7c63e1a2dffa0cd)
+            ;
+
+            
+        
+    
+        var marker_cd0e6f9cf3d247cdb6e226f9d2bc6203 = L.marker(
+            [34.0394, -119.7425],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_6b6ca016c6e4438da7a79ffbffb3571a = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_dffbaff3caed40bfab120879762a1bde = $(`<div id="html_dffbaff3caed40bfab120879762a1bde" style="width: 100.0%; height: 100.0%;"> "USA-National Park Channel Islands"</div>`)[0];
+                popup_6b6ca016c6e4438da7a79ffbffb3571a.setContent(html_dffbaff3caed40bfab120879762a1bde);
+            
+
+            marker_cd0e6f9cf3d247cdb6e226f9d2bc6203.bindPopup(popup_6b6ca016c6e4438da7a79ffbffb3571a)
+            ;
+
+            
+        
+    
+        var marker_3c42a27c05a84c678647cef5e5c4abf5 = L.marker(
+            [32.1648, -104.4094],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_9047b38900474b20b4e66c2e8f8b7941 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_403a78fc23e449e98fe7649324e7eb30 = $(`<div id="html_403a78fc23e449e98fe7649324e7eb30" style="width: 100.0%; height: 100.0%;"> "USA-National Park Carlsbad Caverns"</div>`)[0];
+                popup_9047b38900474b20b4e66c2e8f8b7941.setContent(html_403a78fc23e449e98fe7649324e7eb30);
+            
+
+            marker_3c42a27c05a84c678647cef5e5c4abf5.bindPopup(popup_9047b38900474b20b4e66c2e8f8b7941)
+            ;
+
+            
+        
+    
+        var marker_5070d0a41aa2488a8250ac17bd6f8afb = L.marker(
+            [37.986, -111.144],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_528f3ae462a2409b81737602f8fa9329 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_8db0732bc6174e1d9e8588921a697361 = $(`<div id="html_8db0732bc6174e1d9e8588921a697361" style="width: 100.0%; height: 100.0%;"> "USA-National Park Capitol Reef"</div>`)[0];
+                popup_528f3ae462a2409b81737602f8fa9329.setContent(html_8db0732bc6174e1d9e8588921a697361);
+            
+
+            marker_5070d0a41aa2488a8250ac17bd6f8afb.bindPopup(popup_528f3ae462a2409b81737602f8fa9329)
+            ;
+
+            
+        
+    
+        var marker_3a603d3ff6f44091b2e85a123544c8d3 = L.marker(
+            [38.0252, -109.966],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_c65d643c717e4bcfac27c224830ced15 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_adef7942c0874fe9bfdadeac685ef823 = $(`<div id="html_adef7942c0874fe9bfdadeac685ef823" style="width: 100.0%; height: 100.0%;"> "USA-National Park Canyonlands"</div>`)[0];
+                popup_c65d643c717e4bcfac27c224830ced15.setContent(html_adef7942c0874fe9bfdadeac685ef823);
+            
+
+            marker_3a603d3ff6f44091b2e85a123544c8d3.bindPopup(popup_c65d643c717e4bcfac27c224830ced15)
+            ;
+
+            
+        
+    
+        var marker_9dd0cc99d092445faa1f2d46ca34731e = L.marker(
+            [37.5548, -112.1967],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_7f6a348ab8c949b2959f76c31a706f35 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_9d095bea33e64666a41f904d630c7a20 = $(`<div id="html_9d095bea33e64666a41f904d630c7a20" style="width: 100.0%; height: 100.0%;"> "USA-National Park Bryce Canyon"</div>`)[0];
+                popup_7f6a348ab8c949b2959f76c31a706f35.setContent(html_9d095bea33e64666a41f904d630c7a20);
+            
+
+            marker_9dd0cc99d092445faa1f2d46ca34731e.bindPopup(popup_7f6a348ab8c949b2959f76c31a706f35)
+            ;
+
+            
+        
+    
+        var marker_ec8d918cdad1495bbebc1be581ab6536 = L.marker(
+            [38.58167, -107.7208],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_797f47d427d04047b4d0c14b9b74483d = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_b9c2514cb0e0446aaf8968392e0c9ace = $(`<div id="html_b9c2514cb0e0446aaf8968392e0c9ace" style="width: 100.0%; height: 100.0%;"> "USA-National Park Black Canyon of the Gunnison"</div>`)[0];
+                popup_797f47d427d04047b4d0c14b9b74483d.setContent(html_b9c2514cb0e0446aaf8968392e0c9ace);
+            
+
+            marker_ec8d918cdad1495bbebc1be581ab6536.bindPopup(popup_797f47d427d04047b4d0c14b9b74483d)
+            ;
+
+            
+        
+    
+        var marker_68d5ff157eaa47c692755709f2c10ad3 = L.marker(
+            [25.442, -80.2619],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_7af8b73e698f4cf6ba15262f316f79b2 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_245f9157094248dd940437e60c63061d = $(`<div id="html_245f9157094248dd940437e60c63061d" style="width: 100.0%; height: 100.0%;"> "USA-National Park Biscayne"</div>`)[0];
+                popup_7af8b73e698f4cf6ba15262f316f79b2.setContent(html_245f9157094248dd940437e60c63061d);
+            
+
+            marker_68d5ff157eaa47c692755709f2c10ad3.bindPopup(popup_7af8b73e698f4cf6ba15262f316f79b2)
+            ;
+
+            
+        
+    
+        var marker_9ac5103a5e1b4a5f97f260a826305a05 = L.marker(
+            [29.3816, -103.2432],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_daf7d5e04cac4239bb92f7b8c8094956 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_bd80b6f564244ffeac56eb1a4253576c = $(`<div id="html_bd80b6f564244ffeac56eb1a4253576c" style="width: 100.0%; height: 100.0%;"> "USA-National Park Big Bend"</div>`)[0];
+                popup_daf7d5e04cac4239bb92f7b8c8094956.setContent(html_bd80b6f564244ffeac56eb1a4253576c);
+            
+
+            marker_9ac5103a5e1b4a5f97f260a826305a05.bindPopup(popup_daf7d5e04cac4239bb92f7b8c8094956)
+            ;
+
+            
+        
+    
+        var marker_9735e1873b294e718a4b1f63c3a6ccb6 = L.marker(
+            [43.6504, -102.4343],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_8811ed8657c146eca96018daaed02f0b = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_cf7a0ede0c204142803e22210d14f3ed = $(`<div id="html_cf7a0ede0c204142803e22210d14f3ed" style="width: 100.0%; height: 100.0%;"> "USA-National Park Badlands"</div>`)[0];
+                popup_8811ed8657c146eca96018daaed02f0b.setContent(html_cf7a0ede0c204142803e22210d14f3ed);
+            
+
+            marker_9735e1873b294e718a4b1f63c3a6ccb6.bindPopup(popup_8811ed8657c146eca96018daaed02f0b)
+            ;
+
+            
+        
+    
+        var marker_b84c5ff685d64b0a9a5f879091f2cdd8 = L.marker(
+            [38.77, -109.565],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_59c10546aeaf4c90a60e1242ceb277ae = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_276aacc7e03a463e9b299eb51495d2c8 = $(`<div id="html_276aacc7e03a463e9b299eb51495d2c8" style="width: 100.0%; height: 100.0%;"> "USA-National Park Arches"</div>`)[0];
+                popup_59c10546aeaf4c90a60e1242ceb277ae.setContent(html_276aacc7e03a463e9b299eb51495d2c8);
+            
+
+            marker_b84c5ff685d64b0a9a5f879091f2cdd8.bindPopup(popup_59c10546aeaf4c90a60e1242ceb277ae)
+            ;
+
+            
+        
+    
+        var marker_9d05e34c22bf409180fa07245e9367ca = L.marker(
+            [44.454, -68.0493],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_47e3fcc82c32454ebe3c0cc4b28330a7 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_f9dab9a18c5c458bb19a7dfe54d04409 = $(`<div id="html_f9dab9a18c5c458bb19a7dfe54d04409" style="width: 100.0%; height: 100.0%;"> "USA-National Park Acadia"</div>`)[0];
+                popup_47e3fcc82c32454ebe3c0cc4b28330a7.setContent(html_f9dab9a18c5c458bb19a7dfe54d04409);
+            
+
+            marker_9d05e34c22bf409180fa07245e9367ca.bindPopup(popup_47e3fcc82c32454ebe3c0cc4b28330a7)
+            ;
+
+            
+        
+    
+        var marker_f9e8534984284477b5aeef8e4482ac87 = L.marker(
+            [59.85136, -150.08632],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_56e9027b60694726871ca665d0f8cad7 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_e21ec4a06d1546c9911421626b409de2 = $(`<div id="html_e21ec4a06d1546c9911421626b409de2" style="width: 100.0%; height: 100.0%;"> "USA-National Park Kenai Fjords"</div>`)[0];
+                popup_56e9027b60694726871ca665d0f8cad7.setContent(html_e21ec4a06d1546c9911421626b409de2);
+            
+
+            marker_f9e8534984284477b5aeef8e4482ac87.bindPopup(popup_56e9027b60694726871ca665d0f8cad7)
+            ;
+
+            
+        
+    
+        var marker_2dc010cbb762412ea282f4da9cc3cdc0 = L.marker(
+            [36.8481, -118.3574],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_4be40d1c2a83464385a99f82086cb27d = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_5626cf527bc744e5bf2c22432d5c2868 = $(`<div id="html_5626cf527bc744e5bf2c22432d5c2868" style="width: 100.0%; height: 100.0%;"> "USA-National Park Kings Canyon"</div>`)[0];
+                popup_4be40d1c2a83464385a99f82086cb27d.setContent(html_5626cf527bc744e5bf2c22432d5c2868);
+            
+
+            marker_2dc010cbb762412ea282f4da9cc3cdc0.bindPopup(popup_4be40d1c2a83464385a99f82086cb27d)
+            ;
+
+            
+        
+    
+        var marker_25856d4f733d45dabecf8ca5c89e8117 = L.marker(
+            [67.34409000000001, -159.13696000000002],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_0b0b625116174c468fde2a8de8b0b37e = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_da09cf88799b44afb9386557c337bd99 = $(`<div id="html_da09cf88799b44afb9386557c337bd99" style="width: 100.0%; height: 100.0%;"> "USA-National Park Kobuk Valley"</div>`)[0];
+                popup_0b0b625116174c468fde2a8de8b0b37e.setContent(html_da09cf88799b44afb9386557c337bd99);
+            
+
+            marker_25856d4f733d45dabecf8ca5c89e8117.bindPopup(popup_0b0b625116174c468fde2a8de8b0b37e)
+            ;
+
+            
+        
+    
+        var marker_0aeba075ff124af6995a7df21f2d9b19 = L.marker(
+            [60.19943000000001, -154.32394],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_5b342d3ceaea41539def2efb8091cdc7 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_95cf2fda63394bfd8f8a107f89e5ee38 = $(`<div id="html_95cf2fda63394bfd8f8a107f89e5ee38" style="width: 100.0%; height: 100.0%;"> "USA-National Park Lake Clark"</div>`)[0];
+                popup_5b342d3ceaea41539def2efb8091cdc7.setContent(html_95cf2fda63394bfd8f8a107f89e5ee38);
+            
+
+            marker_0aeba075ff124af6995a7df21f2d9b19.bindPopup(popup_5b342d3ceaea41539def2efb8091cdc7)
+            ;
+
+            
+        
+    
+        var marker_48435eda5ac34ac5b653047f3a77b272 = L.marker(
+            [40.4579, -121.4461],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_247305927ca2411fb986f92503111c9a = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_ce05173cc54a469493e28d560afab65e = $(`<div id="html_ce05173cc54a469493e28d560afab65e" style="width: 100.0%; height: 100.0%;"> "USA-National Park Lassen Volcanic"</div>`)[0];
+                popup_247305927ca2411fb986f92503111c9a.setContent(html_ce05173cc54a469493e28d560afab65e);
+            
+
+            marker_48435eda5ac34ac5b653047f3a77b272.bindPopup(popup_247305927ca2411fb986f92503111c9a)
+            ;
+
+            
+        
+    
+        var marker_6b83c3faf8f24500b814f532b448e38f = L.marker(
+            [37.104, -86.1839],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_69bdaff8030d4338859367b06ba05f4b = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_136a1dbda0914ac08faba522b1a0bbd1 = $(`<div id="html_136a1dbda0914ac08faba522b1a0bbd1" style="width: 100.0%; height: 100.0%;"> "USA-National Park Mammoth Cave"</div>`)[0];
+                popup_69bdaff8030d4338859367b06ba05f4b.setContent(html_136a1dbda0914ac08faba522b1a0bbd1);
+            
+
+            marker_6b83c3faf8f24500b814f532b448e38f.bindPopup(popup_69bdaff8030d4338859367b06ba05f4b)
+            ;
+
+            
+        
+    
+        var marker_2bfa2ee9ff4c48b7a0f75f74769386f9 = L.marker(
+            [37.1824, -108.3871],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_d8dbd9c0b92d4c05b8ffeeb9b45b33af = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_2fccab7637ba468cb6049ffd8dba954e = $(`<div id="html_2fccab7637ba468cb6049ffd8dba954e" style="width: 100.0%; height: 100.0%;"> "USA-National Park Mesa Verde"</div>`)[0];
+                popup_d8dbd9c0b92d4c05b8ffeeb9b45b33af.setContent(html_2fccab7637ba468cb6049ffd8dba954e);
+            
+
+            marker_2bfa2ee9ff4c48b7a0f75f74769386f9.bindPopup(popup_d8dbd9c0b92d4c05b8ffeeb9b45b33af)
+            ;
+
+            
+        
+    
+        var marker_97ace081e2504bca90819a6f395007b3 = L.marker(
+            [46.7981, -121.4762],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_313f6decf06f4670b20d81ccd6efa13b = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_d16749aac8ac457fa3a3f4f2b62b9775 = $(`<div id="html_d16749aac8ac457fa3a3f4f2b62b9775" style="width: 100.0%; height: 100.0%;"> "USA-National Park Mount Rainier"</div>`)[0];
+                popup_313f6decf06f4670b20d81ccd6efa13b.setContent(html_d16749aac8ac457fa3a3f4f2b62b9775);
+            
+
+            marker_97ace081e2504bca90819a6f395007b3.bindPopup(popup_313f6decf06f4670b20d81ccd6efa13b)
+            ;
+
+            
+        
+    
+        var marker_9555728c65b1478abc4a6adb27775440 = L.marker(
+            [48.4004, -121.0219],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_7226233b612a4bffb6a6eaf5cf9f7854 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_cb8b332038514f59bb653a8bc46afbee = $(`<div id="html_cb8b332038514f59bb653a8bc46afbee" style="width: 100.0%; height: 100.0%;"> "USA-National Park North Cascades"</div>`)[0];
+                popup_7226233b612a4bffb6a6eaf5cf9f7854.setContent(html_cb8b332038514f59bb653a8bc46afbee);
+            
+
+            marker_9555728c65b1478abc4a6adb27775440.bindPopup(popup_7226233b612a4bffb6a6eaf5cf9f7854)
+            ;
+
+            
+        
+    
+        var marker_5c236353652a4e2c974265f2924112fb = L.marker(
+            [47.6948, -123.5455],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_e0c2911326574163b015ea75695231ed = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_f8cf24896e294d1a949da3da1a132431 = $(`<div id="html_f8cf24896e294d1a949da3da1a132431" style="width: 100.0%; height: 100.0%;"> "USA-National Park Olympic"</div>`)[0];
+                popup_e0c2911326574163b015ea75695231ed.setContent(html_f8cf24896e294d1a949da3da1a132431);
+            
+
+            marker_5c236353652a4e2c974265f2924112fb.bindPopup(popup_e0c2911326574163b015ea75695231ed)
+            ;
+
+            
+        
+    
+        var marker_da5d8c4488d242aa92fb28057d288a98 = L.marker(
+            [34.8892, -109.7964],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_15b03ee2079b438880e78cc76aa7cc0c = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_913bd3f3a71a4665ae58e275b4827fcb = $(`<div id="html_913bd3f3a71a4665ae58e275b4827fcb" style="width: 100.0%; height: 100.0%;"> "USA-National Park Petrified Forest"</div>`)[0];
+                popup_15b03ee2079b438880e78cc76aa7cc0c.setContent(html_913bd3f3a71a4665ae58e275b4827fcb);
+            
+
+            marker_da5d8c4488d242aa92fb28057d288a98.bindPopup(popup_15b03ee2079b438880e78cc76aa7cc0c)
+            ;
+
+            
+        
+    
+        var marker_a1e24d7b9af04aa39ff1652c02e06fba = L.marker(
+            [41.4771, -123.9452],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_0b0fd79e22c64fdf9304e6f8bb594560 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_d9bd69192f57410aa1f126375e0e18ab = $(`<div id="html_d9bd69192f57410aa1f126375e0e18ab" style="width: 100.0%; height: 100.0%;"> "USA-National Park Redwood"</div>`)[0];
+                popup_0b0fd79e22c64fdf9304e6f8bb594560.setContent(html_d9bd69192f57410aa1f126375e0e18ab);
+            
+
+            marker_a1e24d7b9af04aa39ff1652c02e06fba.bindPopup(popup_0b0fd79e22c64fdf9304e6f8bb594560)
+            ;
+
+            
+        
+    
+        var marker_d85964a862e8475399672612481216ac = L.marker(
+            [40.3576, -105.8307],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_0206f1e32aac41a0bc783457bb2c17a7 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_2d6f07458f8e4b51b2ff7b2ef690f12b = $(`<div id="html_2d6f07458f8e4b51b2ff7b2ef690f12b" style="width: 100.0%; height: 100.0%;"> "USA-National Park Rocky Mountain"</div>`)[0];
+                popup_0206f1e32aac41a0bc783457bb2c17a7.setContent(html_2d6f07458f8e4b51b2ff7b2ef690f12b);
+            
+
+            marker_d85964a862e8475399672612481216ac.bindPopup(popup_0206f1e32aac41a0bc783457bb2c17a7)
+            ;
+
+            
+        
+    
+        var marker_a460c8738dab4e67bfe17e523447ce95 = L.marker(
+            [32.2432, -111.1309],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_6ec72ecd79f24f079e64d2414801f871 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_b157cc3dad944f8389f2a465e68ce48f = $(`<div id="html_b157cc3dad944f8389f2a465e68ce48f" style="width: 100.0%; height: 100.0%;"> "USA-National Park Saguaro"</div>`)[0];
+                popup_6ec72ecd79f24f079e64d2414801f871.setContent(html_b157cc3dad944f8389f2a465e68ce48f);
+            
+
+            marker_a460c8738dab4e67bfe17e523447ce95.bindPopup(popup_6ec72ecd79f24f079e64d2414801f871)
+            ;
+
+            
+        
+    
+        var marker_367b8e3b463f4175a1ff605a46b08ea1 = L.marker(
+            [36.5231, -118.552],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_c0ca021879814a9294c08cb85254be9b = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_e35bdf44200648de89b2de2992cdcaa0 = $(`<div id="html_e35bdf44200648de89b2de2992cdcaa0" style="width: 100.0%; height: 100.0%;"> "USA-National Park Sequoia"</div>`)[0];
+                popup_c0ca021879814a9294c08cb85254be9b.setContent(html_e35bdf44200648de89b2de2992cdcaa0);
+            
+
+            marker_367b8e3b463f4175a1ff605a46b08ea1.bindPopup(popup_c0ca021879814a9294c08cb85254be9b)
+            ;
+
+            
+        
+    
+        var marker_2973ba0b254741df8caa5d7731f5c8f2 = L.marker(
+            [38.2604, -78.7041],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_23c842bf3d7f4290809ba797685f27b9 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_37d1cf49444247b3a8f3c9717f5db875 = $(`<div id="html_37d1cf49444247b3a8f3c9717f5db875" style="width: 100.0%; height: 100.0%;"> "USA-National Park Shenandoah"</div>`)[0];
+                popup_23c842bf3d7f4290809ba797685f27b9.setContent(html_37d1cf49444247b3a8f3c9717f5db875);
+            
+
+            marker_2973ba0b254741df8caa5d7731f5c8f2.bindPopup(popup_23c842bf3d7f4290809ba797685f27b9)
+            ;
+
+            
+        
+    
+        var marker_9405cdb1c2ed4e59925f9a3ea13a2d63 = L.marker(
+            [47.3352, -103.2491],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_83c2002fcee449e3ac27fa8f78e12920 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_d81d366a631745e5a7e72fedc1478db1 = $(`<div id="html_d81d366a631745e5a7e72fedc1478db1" style="width: 100.0%; height: 100.0%;"> "USA-National Park Theodore Roosevelt"</div>`)[0];
+                popup_83c2002fcee449e3ac27fa8f78e12920.setContent(html_d81d366a631745e5a7e72fedc1478db1);
+            
+
+            marker_9405cdb1c2ed4e59925f9a3ea13a2d63.bindPopup(popup_83c2002fcee449e3ac27fa8f78e12920)
+            ;
+
+            
+        
+    
+        var marker_882a58083b4a46e09e59340877a3fc94 = L.marker(
+            [48.0996, -93.0169],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_503184fcfd0c4b1ea55f384c0296063b = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_00019245495e4c3aaef271c4024b41e5 = $(`<div id="html_00019245495e4c3aaef271c4024b41e5" style="width: 100.0%; height: 100.0%;"> "USA-National Park Voyageurs"</div>`)[0];
+                popup_503184fcfd0c4b1ea55f384c0296063b.setContent(html_00019245495e4c3aaef271c4024b41e5);
+            
+
+            marker_882a58083b4a46e09e59340877a3fc94.bindPopup(popup_503184fcfd0c4b1ea55f384c0296063b)
+            ;
+
+            
+        
+    
+        var marker_7aab7c2e45e54454b1571de7200c66c1 = L.marker(
+            [43.4348, -102.8731],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_4258f7ca8420450a9333af48f49b752e = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_2c8e23c073674a6ea2fe956177b8ca2a = $(`<div id="html_2c8e23c073674a6ea2fe956177b8ca2a" style="width: 100.0%; height: 100.0%;"> "USA-National Park Wind Cave"</div>`)[0];
+                popup_4258f7ca8420450a9333af48f49b752e.setContent(html_2c8e23c073674a6ea2fe956177b8ca2a);
+            
+
+            marker_7aab7c2e45e54454b1571de7200c66c1.bindPopup(popup_4258f7ca8420450a9333af48f49b752e)
+            ;
+
+            
+        
+    
+        var marker_c643c2267ea3403da5b1d1b3bb61d2dc = L.marker(
+            [61.24284, -143.2166],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_9d26edf0b91948cf8934f9e65ac25e0d = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_8dc7a0d0234945c182944200eade4451 = $(`<div id="html_8dc7a0d0234945c182944200eade4451" style="width: 100.0%; height: 100.0%;"> "USA-National Park Wrangell-St. Elias"</div>`)[0];
+                popup_9d26edf0b91948cf8934f9e65ac25e0d.setContent(html_8dc7a0d0234945c182944200eade4451);
+            
+
+            marker_c643c2267ea3403da5b1d1b3bb61d2dc.bindPopup(popup_9d26edf0b91948cf8934f9e65ac25e0d)
+            ;
+
+            
+        
+    
+        var marker_e40c6078de8f4b7d9385fe9935817ced = L.marker(
+            [44.5716, -110.355],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_8b765f2df7c2425aa523d7de73d5bfc4 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_34283e3d55bc425296543d21a97a5a8b = $(`<div id="html_34283e3d55bc425296543d21a97a5a8b" style="width: 100.0%; height: 100.0%;"> "USA-National Park Yellowstone"</div>`)[0];
+                popup_8b765f2df7c2425aa523d7de73d5bfc4.setContent(html_34283e3d55bc425296543d21a97a5a8b);
+            
+
+            marker_e40c6078de8f4b7d9385fe9935817ced.bindPopup(popup_8b765f2df7c2425aa523d7de73d5bfc4)
+            ;
+
+            
+        
+    
+        var marker_a37270487e364dd9bbd48dc22c6a9900 = L.marker(
+            [37.8231, -119.6195],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_5bb8ca44ceda45b896e99beaf9245ed1 = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_1948055584dd4d56981cb8c167941130 = $(`<div id="html_1948055584dd4d56981cb8c167941130" style="width: 100.0%; height: 100.0%;"> "USA-National Park Yosemite"</div>`)[0];
+                popup_5bb8ca44ceda45b896e99beaf9245ed1.setContent(html_1948055584dd4d56981cb8c167941130);
+            
+
+            marker_a37270487e364dd9bbd48dc22c6a9900.bindPopup(popup_5bb8ca44ceda45b896e99beaf9245ed1)
+            ;
+
+            
+        
+    
+        var marker_50e7c74d74de4e20aa59aa787afd1862 = L.marker(
+            [37.3, -112.9735],
+            {
+                icon: new L.Icon.Default()
+                }
+            ).addTo(map_0bc1f37d0d384a79b0c332b8871c9610);
+        
+    
+            var popup_697096513dd64b989b38709ca32b2aaa = L.popup({maxWidth: '300'
+            
+            });
+
+            
+                var html_b199e7634f8a4fea9c970a5a0206f87e = $(`<div id="html_b199e7634f8a4fea9c970a5a0206f87e" style="width: 100.0%; height: 100.0%;"> "USA-National Park Zion"</div>`)[0];
+                popup_697096513dd64b989b38709ca32b2aaa.setContent(html_b199e7634f8a4fea9c970a5a0206f87e);
+            
+
+            marker_50e7c74d74de4e20aa59aa787afd1862.bindPopup(popup_697096513dd64b989b38709ca32b2aaa)
+            ;
+
+            
+        
+</script>
+<footer>
+  <p>data science visualizations</p>
+</footer>
+
 </body>
 </html>
